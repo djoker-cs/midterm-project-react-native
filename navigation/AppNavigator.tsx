@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import JobFinderScreen from '../screens/JobFinderScreen';
 import SavedJobsScreen from '../screens/SavedJobsScreen';
@@ -16,18 +16,28 @@ export type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigator = () => {
-  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+  const { isDarkMode, toggleTheme, theme } = useContext(ThemeContext);
 
   return (
-    <NavigationContainer theme={isDarkMode ? DarkTheme : DefaultTheme}>
-      <Stack.Navigator>
+    <NavigationContainer theme={theme}>
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: theme.colors.card,
+          },
+          headerTintColor: theme.colors.text,
+          headerTitleStyle: {
+            color: theme.colors.text,
+          },
+        }}
+      >
         <Stack.Screen
           name="JobFinderScreen"
           component={JobFinderScreen}
           options={{
             title: 'Job Finder',
             headerRight: () => (
-              <HeaderThemeToggle toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
+              <HeaderThemeToggle toggleTheme={toggleTheme} isDarkMode={isDarkMode} theme={theme} />
             ),
           }}
         />
@@ -37,7 +47,7 @@ const AppNavigator = () => {
           options={{
             title: 'Saved Jobs',
             headerRight: () => (
-              <HeaderThemeToggle toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
+              <HeaderThemeToggle toggleTheme={toggleTheme} isDarkMode={isDarkMode} theme={theme} />
             ),
           }}
         />
@@ -47,7 +57,7 @@ const AppNavigator = () => {
           options={{
             title: 'Apply',
             headerRight: () => (
-              <HeaderThemeToggle toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
+              <HeaderThemeToggle toggleTheme={toggleTheme} isDarkMode={isDarkMode} theme={theme} />
             ),
           }}
         />
@@ -56,21 +66,22 @@ const AppNavigator = () => {
   );
 };
 
-// Dark Mode Toggle Button in Header
+// dark mode moment na di parin gumagana
 type HeaderProps = {
   toggleTheme: () => void;
   isDarkMode: boolean;
+  theme: any;
 };
 
-const HeaderThemeToggle: React.FC<HeaderProps> = ({ toggleTheme, isDarkMode }) => (
-    <TouchableOpacity
-      onPress={toggleTheme}
-      style={{ marginRight: 10 }}
-    >
-      <Text style={{ color: isDarkMode ? '#FFF' : '#007bff' }}>
-        {isDarkMode ? 'Light Mode' : 'Dark Mode'}
-      </Text>
-    </TouchableOpacity>
-  );
+const HeaderThemeToggle: React.FC<HeaderProps> = ({ toggleTheme, isDarkMode, theme }) => (
+  <TouchableOpacity
+    onPress={toggleTheme}
+    style={{ marginRight: 10 }}
+  >
+    <Text style={{ color: theme.colors.text }}>
+      {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+    </Text>
+  </TouchableOpacity>
+);
 
 export default AppNavigator;
